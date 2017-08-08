@@ -18,10 +18,9 @@ namespace Assets.Scripts
 		//Дочерний элемент отслеживающий пересещение с землей.
 		public Transform GroundCheck;
 
-		//Край карты
-		public BoxCollider2D FieldDeath;
-		
 		public GameObject Spawn;
+
+		public TextMesh Points;
 
 		//Радиус соприкосновения.
 		private float _groundRadius = 0.2f;
@@ -36,6 +35,8 @@ namespace Assets.Scripts
 
 		//Стоит ли персонаж на земле.
 		private bool _isGrounded = false;
+
+		private int _points = 0;
 
 		#endregion
 
@@ -75,15 +76,30 @@ namespace Assets.Scripts
 			else if(move < 0 && _isFacingRight) Flip();
 		}
 
+		private void OnTriggerEnter2D(Collider2D col)
+		{
+			switch(col.gameObject.layer)
+			{
+				case 9:
+					_points++;
+					Points.text = "Очки: " + _points;
+					col.gameObject.SetActive(false);
+					break;
+				case 10:
+					transform.position = Spawn.transform.position;
+					break;
+			}
+		}
+
 		/// <summary> Срабатывает с каждым обновлением экрана. </summary>
 		private void Update()
 		{
-			if(FieldDeath.IsTouching(this.GetComponent<Collider2D>())) transform.position = Spawn.transform.position;
 			if(!_isGrounded || !Input.GetKeyDown(KeyCode.Space)) return;
 
 			_anim.SetBool("Ground", false);
 			_rb.AddForce(new Vector2(0, JumpForce));
 		}
+
 
 	}
 }
