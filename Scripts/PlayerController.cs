@@ -18,6 +18,10 @@ namespace Assets.Scripts
 		//Дочерний элемент отслеживающий пересещение с землей.
 		public Transform GroundCheck;
 
+		public BoxCollider2D FieldDeath;
+
+		public GameObject Spawn;
+
 		//Радиус соприкосновения.
 		private float _groundRadius = 0.2f;
 
@@ -28,7 +32,7 @@ namespace Assets.Scripts
 		private Animator _anim;
 
 		private Rigidbody2D _rb;
-	
+
 		//Стоит ли персонаж на земле.
 		private bool _isGrounded = false;
 
@@ -58,22 +62,29 @@ namespace Assets.Scripts
 			_isGrounded = Physics2D.OverlapCircle(GroundCheck.position, _groundRadius, WhatIsGround);
 			_anim.SetBool("Ground", _isGrounded);
 			_anim.SetFloat("VSpeed", _rb.velocity.y);
-		
-			if(!_isGrounded) return;
+
+			if(!_isGrounded)
+				return;
 
 			var move = Input.GetAxis("Horizontal");
 			_anim.SetFloat("Speed", Mathf.Abs(move));
 
 			_rb.velocity = new Vector2(move * MaxSpeed, _rb.velocity.y);
 
-			if(move > 0 && !_isFacingRight) Flip();
-			else if(move < 0 && _isFacingRight) Flip();
+			if(move > 0 && !_isFacingRight)
+				Flip();
+			else if(move < 0 && _isFacingRight)
+				Flip();
 		}
 
 		/// <summary> Срабатывает с каждым обновлением экрана. </summary>
 		private void Update()
 		{
-			if(!_isGrounded || !Input.GetKeyDown(KeyCode.Space)) return;
+			if(FieldDeath.IsTouching(this.GetComponent<Collider2D>()))
+				transform.position = Spawn.transform.position;
+
+			if(!_isGrounded || !Input.GetKeyDown(KeyCode.Space))
+				return;
 
 			_anim.SetBool("Ground", false);
 			_rb.AddForce(new Vector2(0, JumpForce));

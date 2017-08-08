@@ -5,7 +5,6 @@ namespace Assets.Scripts
 	public class CameraControler : MonoBehaviour
 	{
 
-		public GameObject Player;
 	
 		void Update ()
 		{
