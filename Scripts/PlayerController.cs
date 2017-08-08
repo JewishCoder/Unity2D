@@ -76,6 +76,8 @@ namespace Assets.Scripts
 			else if(move < 0 && _isFacingRight) Flip();
 		}
 
+		/// <summary> Отлавливает объекты, у которых выключено свойство триггера. </summary>
+		/// <param name="col"> Триггер объект. </param>
 		private void OnTriggerEnter2D(Collider2D col)
 		{
 			switch(col.gameObject.layer)
