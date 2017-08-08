@@ -18,8 +18,9 @@ namespace Assets.Scripts
 		//Дочерний элемент отслеживающий пересещение с землей.
 		public Transform GroundCheck;
 
+		//Край карты
 		public BoxCollider2D FieldDeath;
-
+		
 		public GameObject Spawn;
 
 		//Радиус соприкосновения.
@@ -63,28 +64,22 @@ namespace Assets.Scripts
 			_anim.SetBool("Ground", _isGrounded);
 			_anim.SetFloat("VSpeed", _rb.velocity.y);
 
-			if(!_isGrounded)
-				return;
+			if(!_isGrounded) return;
 
 			var move = Input.GetAxis("Horizontal");
 			_anim.SetFloat("Speed", Mathf.Abs(move));
 
 			_rb.velocity = new Vector2(move * MaxSpeed, _rb.velocity.y);
 
-			if(move > 0 && !_isFacingRight)
-				Flip();
-			else if(move < 0 && _isFacingRight)
-				Flip();
+			if(move > 0 && !_isFacingRight) Flip();
+			else if(move < 0 && _isFacingRight) Flip();
 		}
 
 		/// <summary> Срабатывает с каждым обновлением экрана. </summary>
 		private void Update()
 		{
-			if(FieldDeath.IsTouching(this.GetComponent<Collider2D>()))
-				transform.position = Spawn.transform.position;
-
-			if(!_isGrounded || !Input.GetKeyDown(KeyCode.Space))
-				return;
+			if(FieldDeath.IsTouching(this.GetComponent<Collider2D>())) transform.position = Spawn.transform.position;
+			if(!_isGrounded || !Input.GetKeyDown(KeyCode.Space)) return;
 
 			_anim.SetBool("Ground", false);
 			_rb.AddForce(new Vector2(0, JumpForce));
